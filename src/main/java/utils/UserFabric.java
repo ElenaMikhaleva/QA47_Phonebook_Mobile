@@ -13,16 +13,16 @@ public class UserFabric {
     }
 
     public static User createUserWrongEmail(String email) {
-        return User.builder().
-                username(email).
-                password("P@ssw0rd")
+        return User.builder()
+                .username(email)
+                .password("P@ssw0rd")
                 .build();
     }
 
     public static User createUserWrongPassword(String password) {
         return User.builder().
-                username(password).
-                password("P@ssw0rd")
+                username(generateEmail(15))
+                .password("Password")
                 .build();
     }
 }
