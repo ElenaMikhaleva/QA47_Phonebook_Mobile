@@ -1,6 +1,7 @@
 package ui_mobile;
 
 import config.AppiumConfig;
+import dto.Contact;
 import dto.User;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
@@ -13,9 +14,10 @@ public class AddNewContactTests extends AppiumConfig {
 
     ContactsScreen contactsScreen;
     AddNewContactScreen addNewContactScreen;
+    ContactScreen contactScreen;
 
     User qa_user = User.builder()
-            .username("qa_user_qwerty@mail.com")
+            .username("qa_user_asdfh@mail.com")
             .password("Password123!")
             .build();
 
@@ -32,8 +34,17 @@ public class AddNewContactTests extends AppiumConfig {
     @Test
     public void addNewContactPositiveTest(){
         addNewContactScreen.typeContactForm(createPositiveContact());
-        Assert.assertTrue(addNewContactScreen
-                .validateMessageSuccess("Contact was added!"));
+        Assert.assertTrue(addNewContactScreen.validateMessageSuccess("Contact was added!"));
+    }
+
+    @Test()
+    public void addNewContactPositiveTest_validateDataContact(){
+        Contact contact = createPositiveContact();
+        addNewContactScreen.typeContactForm(contact);
+        contactsScreen.scrollToLastContact();
+        contactsScreen.clickToLastContact();
+        contactScreen = new ContactScreen(driver);
+        Assert.assertEquals(contactScreen.getContact(), contact);
     }
 
     @Test
@@ -44,14 +55,12 @@ public class AddNewContactTests extends AppiumConfig {
     @Test
     public void addNewContactNegativeTest_wrongPhone(){
         addNewContactScreen.typeContactForm(createNegativeContact_wrongPhone(""));
-        Assert.assertTrue(new ErrorScreen(driver)
-                .validateErrorMessage("Phone number must contain only"));
+        Assert.assertTrue(new ErrorScreen(driver).validateErrorMessage("Phone number must contain only"));
     }
 
     @Test
     public void addNewContactNegativeTest_wrongName(){
         addNewContactScreen.typeContactForm(createNegativeContact_wrongName("     "));
-        Assert.assertTrue(new ErrorScreen(driver)
-                .validateErrorMessage("must not be blank"));
+        Assert.assertTrue(new ErrorScreen(driver).validateErrorMessage("must not be blank"));
     }
 }
